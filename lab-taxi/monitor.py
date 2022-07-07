@@ -22,6 +22,8 @@ def interact(env, agent, num_episodes=20000, window=100):
     avg_rewards = deque(maxlen=num_episodes)
     # initialize best average reward
     best_avg_reward = -math.inf
+    avg_reward = -math.inf
+    best_avg_reward_episode = -1
     # initialize monitor for most recent rewards
     samp_rewards = deque(maxlen=window)
     # for each episode
@@ -53,8 +55,9 @@ def interact(env, agent, num_episodes=20000, window=100):
             # update best average reward
             if avg_reward > best_avg_reward:
                 best_avg_reward = avg_reward
+                best_avg_reward_episode = i_episode
         # monitor progress
-        print("\rEpisode {}/{} || Best average reward {}".format(i_episode, num_episodes, best_avg_reward), end="")
+        print("\rEpisode {}/{} || Best average reward {} cur avg reward {} epi {}".format(i_episode, num_episodes, best_avg_reward, avg_reward, best_avg_reward_episode), end="")
         sys.stdout.flush()
         # check if task is solved (according to OpenAI Gym)
         if best_avg_reward >= 9.7:
