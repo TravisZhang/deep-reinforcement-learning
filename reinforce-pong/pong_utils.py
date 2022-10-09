@@ -363,3 +363,11 @@ if __name__ == '__main__':
     a=np.arange(10)
     a_list = [a for i in range(10)]
     print(np.mean(a_list, axis=1))
+    
+    a = torch.tensor(np.random.randn(10))
+    b = torch.tensor(np.random.randn(10))
+    c = torch.min(a, b)
+    print('a:',a)
+    print('b:',b)
+    print('c:',c)
+    
