@@ -8,6 +8,7 @@ import gc
 import datetime
 import torch
 import sys, os
+from memory_profiler import profile
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -16,6 +17,8 @@ Experience = namedtuple("Experience",
                             "state", "action", "reward", "next_state", "done",
                             "priority"
                         ])
+
+# Ref: https://nn.labml.ai/rl/dqn/replay_buffer.html
 
 # Tree: sum tree
 # key: priority**alpha, value: sum of priority**alpha of self and children
@@ -233,6 +236,7 @@ class BinaryTree:
             # print('predecessor change left: ', predecessor)
             # print('left_child: ', predecessor.left_child)
             if predecessor == predecessor.parent:
+                print('error for loop found !!!')
                 input()
             self.UpdateValue(predecessor)
         # print(gc.get_count())
@@ -326,9 +330,9 @@ class BinaryTree:
             priority_alpha = priority**self.alpha
             self.max_priority_alpha = max(self.max_priority_alpha,
                                           priority_alpha)
-            if type(sample.experience) is Experience:
-                # print('replacing experience p: ', sample.experience.priority, ' with p: ', priority)
-                sample.experience._replace(priority=priority)
+            # if type(sample.experience) is Experience:
+            #     # print('replacing experience p: ', sample.experience.priority, ' with p: ', priority)
+            #     sample.experience._replace(priority=priority)
             # print('\ndeleting')
             self.DeleteNode(sample)
             # self.Print()

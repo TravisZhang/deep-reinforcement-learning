@@ -121,7 +121,7 @@ class Agent():
             self.tree.Print(self.save_path, input_str)
 
         # Learn, if enough samples are available in memory
-        if self.tree.Size() > BATCH_SIZE and t_step % UPDATE_STEP == 0:
+        if self.tree.Size() > BATCH_SIZE * UPDATE_TIMES and t_step % UPDATE_STEP == 0:
             # print('Updating for ', UPDATE_TIMES, ' times')
             for i in range(UPDATE_TIMES):
                 current_time = TimeStamp()
@@ -182,7 +182,7 @@ class Agent():
             noises = [self.noise.sample() for action in actions]
             noises = np.asarray(noises)
             actions += noises
-            np.clip(actions, -1, 1)
+            np.clip(actions, self.actor_local.min_value, self.actor_local.max_value)
         return actions
 
     def reset(self):
@@ -397,7 +397,9 @@ def ProcessEnvironmentInfo(env: UnityEnvironment):
     brain_name = env.brain_names[0]
     brain = env.brains[brain_name]
 
+    # reset the environment
     env_info = env.reset(train_mode=True)[brain_name]
+    # get action & state size
     state_size = env_info.vector_observations.shape[1]
     action_size = brain.vector_action_space_size
     print('state size:', state_size, 'action size:', action_size)
